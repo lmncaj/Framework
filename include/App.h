@@ -99,7 +99,7 @@ private:
 	ComPtr<ID3D12DescriptorHeap> m_pHeapCBV_SRV_UAV;
 	ComPtr<ID3D12Resource> m_pVB;
 	ComPtr<ID3D12Resource> m_pIB;
-	ComPtr<ID3D12Resource> m_pCB[FrameCount * 2];
+	ComPtr<ID3D12Resource> m_pCB[FrameCount];
 	ComPtr<ID3D12RootSignature> m_pRootSignature;
 	ComPtr<ID3D12PipelineState> m_pPSO;
 
@@ -111,7 +111,7 @@ private:
 	D3D12_VERTEX_BUFFER_VIEW m_VBV;
 	D3D12_VIEWPORT m_Viewport;
 	D3D12_RECT m_Scissor;
-	ConstantBufferView<Transform> m_CBV[FrameCount * 2];
+	ConstantBufferView<Transform> m_CBV[FrameCount];
 	D3D12_INDEX_BUFFER_VIEW m_IBV;
 	Texture m_Texture;
 	std::vector<Mesh> m_Meshes;

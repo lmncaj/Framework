@@ -517,12 +517,6 @@ bool App::OnInit()
 	}
 	//頂点バッファ
 	{
-		/*DirectX::VertexPositionTexture vertices[] = {
-			DirectX::VertexPositionTexture(DirectX::XMFLOAT3(-1.0f,1.0f,0.0f),DirectX::XMFLOAT2(0.0f,0.0f)),
-			DirectX::VertexPositionTexture(DirectX::XMFLOAT3(1.0f,1.0f,0.0f),DirectX::XMFLOAT2(1.0f,0.0f)),
-			DirectX::VertexPositionTexture(DirectX::XMFLOAT3(1.0f,-1.0f,0.0f),DirectX::XMFLOAT2(1.0f,1.0f)),
-			DirectX::VertexPositionTexture(DirectX::XMFLOAT3(-1.0f,-1.0f,0.0f),DirectX::XMFLOAT2(0.0f,1.0f)),
-		};*/
 		auto vertices = m_Meshes[0].Vertices.data();
 		auto size = sizeof(MeshVertex) * m_Meshes[0].Vertices.size();
 	
@@ -648,7 +642,7 @@ bool App::OnInit()
 
 		auto incrementSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 		
-		for (auto i = 0; i < FrameCount * 2 ; ++i)
+		for (auto i = 0; i < FrameCount ; ++i)
 		{
 			auto hr = m_pDevice->CreateCommittedResource(&prop, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(m_pCB[i].GetAddressOf()));
 			if (FAILED(hr))
@@ -660,8 +654,8 @@ bool App::OnInit()
 			auto handleCPU = m_pHeapCBV_SRV_UAV->GetCPUDescriptorHandleForHeapStart();
 			auto handleGPU = m_pHeapCBV_SRV_UAV->GetGPUDescriptorHandleForHeapStart();
 
-			//handleCPU.ptr += incrementSize * i;
-			//handleGPU.ptr += incrementSize * i;
+			handleCPU.ptr += incrementSize * i;
+			handleGPU.ptr += incrementSize * i;
 
 			m_CBV[i].HandleCPU = handleCPU;
 			m_CBV[i].HandleGPU = handleGPU;
@@ -678,7 +672,7 @@ bool App::OnInit()
 				return false;
 			}
 
-			auto eyePos = DirectX::XMVectorSet(0.0f, 0.0f, 5.0f, 0.0f);
+			auto eyePos = DirectX::XMVectorSet(0.0f, 1.0f, 2.0f, 0.0f);
 			auto targetPos = DirectX::XMVectorZero();
 			auto upward = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 			auto fovY = DirectX::XMConvertToRadians(37.5f);
@@ -715,8 +709,8 @@ bool App::OnInit()
 		auto handleCPU = m_pHeapCBV_SRV_UAV->GetCPUDescriptorHandleForHeapStart();
 		auto handleGPU = m_pHeapCBV_SRV_UAV->GetGPUDescriptorHandleForHeapStart();
 
-		//handleCPU.ptr += incrementSize *2;
-		//handleGPU.ptr += incrementSize *2;
+		handleCPU.ptr += incrementSize *2;
+		handleGPU.ptr += incrementSize *2;
 		m_Texture.HandleCPU = handleCPU;
 		m_Texture.HandleGPU = handleGPU;
 
@@ -807,25 +801,6 @@ bool App::OnInit()
 
 	//パイプラインステート
 	{
-		////位置アトリビュート
-		//D3D12_INPUT_ELEMENT_DESC elements[2];
-		//elements[0].SemanticName = "POSITION";
-		//elements[0].SemanticIndex = 0;
-		//elements[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-		//elements[0].InputSlot = 0;
-		//elements[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-		//elements[0].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
-		//elements[0].InstanceDataStepRate = 0;
-
-		////テクスチャ座標アトリビュート
-		//elements[1].SemanticName="TEXCOORD";
-		//elements[1].SemanticIndex = 0;
-		//elements[1].Format = DXGI_FORMAT_R32G32_FLOAT;
-		//elements[1].InputSlot = 0;
-		//elements[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-		//elements[1].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
-		//elements[1].InstanceDataStepRate = 0;
-
 		D3D12_RASTERIZER_DESC descRS;
 		descRS.FillMode = D3D12_FILL_MODE_SOLID;
 		descRS.CullMode = D3D12_CULL_MODE_NONE;
@@ -996,9 +971,7 @@ void App::Render()
 
 	{
 		m_RotateAngle += 0.025f;
-		m_CBV[m_FrameIndex * 2 + 0].pBuffer->World = DirectX::XMMatrixRotationZ(m_RotateAngle+DirectX::XMConvertToRadians(45.0f));
-		m_CBV[m_FrameIndex * 2 + 1].pBuffer->World = DirectX::XMMatrixRotationY(m_RotateAngle) * DirectX::XMMatrixScaling(2.0f, 0.5f, 1.0f);
-
+		m_CBV[m_FrameIndex].pBuffer->World = DirectX::XMMatrixRotationY(m_RotateAngle);
 	}
 	//コマンドアロケータとコマンドリストの記録開始
 	m_pCmdAllocator[m_FrameIndex]->Reset();
@@ -1027,7 +1000,7 @@ void App::Render()
 		m_pCmdList->SetDescriptorHeaps(1, m_pHeapCBV_SRV_UAV.GetAddressOf());
 		//定数バッファの開始場所
 		//ルートシグネチャが直接参照するCBVを指定する。
-		m_pCmdList->SetGraphicsRootConstantBufferView(0, m_CBV[m_FrameIndex * 2+0 ].Desc.BufferLocation);
+		m_pCmdList->SetGraphicsRootConstantBufferView(0, m_CBV[m_FrameIndex].Desc.BufferLocation);
 		//ディスクリプタテーブルが参照するディスクリプタを指定する
 		m_pCmdList->SetGraphicsRootDescriptorTable(1, m_Texture.HandleGPU);
 		//パイプラインステート(シェーダの情報)
@@ -1043,8 +1016,6 @@ void App::Render()
 		m_pCmdList->RSSetScissorRects(1, &m_Scissor);
 		//描画命令(マテリアルの数だけ実行される)
 		auto count = static_cast<uint32_t>(m_Meshes[0].Indices.size());
-		m_pCmdList->DrawIndexedInstanced(count, 1, 0, 0, 0);
-		m_pCmdList->SetGraphicsRootConstantBufferView(0, m_CBV[m_FrameIndex * 2 + 1].Desc.BufferLocation);
 		m_pCmdList->DrawIndexedInstanced(count, 1, 0, 0, 0);
 		NoesisApp::D3D12Factory::SetCommandList(_device, m_pCmdList.Get(), m_FenceCounter[m_FrameIndex]);
 		_view->GetRenderer()->Render();
