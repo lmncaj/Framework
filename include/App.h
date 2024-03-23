@@ -19,6 +19,7 @@
 #include <NsRender/D3D12Factory.h>
 #include <NsRender/RenderDevice.h>
 #include <NsCore/HighResTimer.h>
+#include "Mesh.h"
 
 
 #pragma comment(lib,"d3d12.lib")
@@ -113,6 +114,8 @@ private:
 	ConstantBufferView<Transform> m_CBV[FrameCount * 2];
 	D3D12_INDEX_BUFFER_VIEW m_IBV;
 	Texture m_Texture;
+	std::vector<Mesh> m_Meshes;
+	std::vector<Material> m_Materials;
 	float m_RotateAngle;
 
 

@@ -503,15 +503,28 @@ void App::TermD3D()
 
 bool App::OnInit()
 {
-
+	{
+		std::wstring path;
+		if(!SearchFilePath(L"res/teapot/teapot.obj",path))
+		{
+			return false;
+		}
+		if(!LoadMesh(path.c_str(),m_Meshes,m_Materials))
+		{
+			return false;
+		}
+		assert(m_Meshes.size() == 1);
+	}
 	//頂点バッファ
 	{
-		DirectX::VertexPositionTexture vertices[] = {
+		/*DirectX::VertexPositionTexture vertices[] = {
 			DirectX::VertexPositionTexture(DirectX::XMFLOAT3(-1.0f,1.0f,0.0f),DirectX::XMFLOAT2(0.0f,0.0f)),
 			DirectX::VertexPositionTexture(DirectX::XMFLOAT3(1.0f,1.0f,0.0f),DirectX::XMFLOAT2(1.0f,0.0f)),
 			DirectX::VertexPositionTexture(DirectX::XMFLOAT3(1.0f,-1.0f,0.0f),DirectX::XMFLOAT2(1.0f,1.0f)),
 			DirectX::VertexPositionTexture(DirectX::XMFLOAT3(-1.0f,-1.0f,0.0f),DirectX::XMFLOAT2(0.0f,1.0f)),
-		};
+		};*/
+		auto vertices = m_Meshes[0].Vertices.data();
+		auto size = sizeof(MeshVertex) * m_Meshes[0].Vertices.size();
 	
 		D3D12_HEAP_PROPERTIES prop = {};
 		prop.Type = D3D12_HEAP_TYPE_UPLOAD;
@@ -523,7 +536,7 @@ bool App::OnInit()
 		D3D12_RESOURCE_DESC desc = {};
 		desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 		desc.Alignment = 0;
-		desc.Width = sizeof(vertices);
+		desc.Width = size;
 		desc.Height = 1;
 		desc.DepthOrArraySize = 1;
 		desc.MipLevels = 1;
@@ -546,16 +559,19 @@ bool App::OnInit()
 			return false;
 		}
 
-		memcpy(ptr, vertices, sizeof(vertices));
+		memcpy(ptr, vertices, size);
 		m_pVB->Unmap(0, nullptr);
 
 		m_VBV.BufferLocation = m_pVB->GetGPUVirtualAddress();
-		m_VBV.SizeInBytes = static_cast<UINT>(sizeof(vertices));
-		m_VBV.StrideInBytes = static_cast<UINT>(sizeof(DirectX::VertexPositionTexture));
+		m_VBV.SizeInBytes = static_cast<UINT>(size);
+		m_VBV.StrideInBytes = static_cast<UINT>(sizeof(MeshVertex));
 	}
 	//インデックスバッファ
 	{
-		uint32_t indices[] = {0,1,2,0,2,3};
+		//uint32_t indices[] = {0,1,2,0,2,3};
+
+		auto indices = m_Meshes[0].Indices.data(); 
+		auto size = sizeof(uint32_t) * m_Meshes[0].Indices.size();
 
 		D3D12_HEAP_PROPERTIES prop = {};
 		prop.Type = D3D12_HEAP_TYPE_UPLOAD;
@@ -567,7 +583,7 @@ bool App::OnInit()
 		D3D12_RESOURCE_DESC desc = {};
 		desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 		desc.Alignment = 0;
-		desc.Width = sizeof(indices);
+		desc.Width = size;
 		desc.Height = 1;
 		desc.DepthOrArraySize = 1;
 		desc.MipLevels = 1;
@@ -587,12 +603,12 @@ bool App::OnInit()
 		{
 			return false;
 		}
-		memcpy(ptr, indices, sizeof(indices));
+		memcpy(ptr, indices, size);
 		m_pIB->Unmap(0, nullptr);
 
 		m_IBV.BufferLocation = m_pIB->GetGPUVirtualAddress();
 		m_IBV.Format = DXGI_FORMAT_R32_UINT;
-		m_IBV.SizeInBytes = sizeof(indices);
+		m_IBV.SizeInBytes = size;
 	}
 	//ディスクリプタヒープ
 	{
@@ -644,8 +660,8 @@ bool App::OnInit()
 			auto handleCPU = m_pHeapCBV_SRV_UAV->GetCPUDescriptorHandleForHeapStart();
 			auto handleGPU = m_pHeapCBV_SRV_UAV->GetGPUDescriptorHandleForHeapStart();
 
-			handleCPU.ptr += incrementSize * i;
-			handleGPU.ptr += incrementSize * i;
+			//handleCPU.ptr += incrementSize * i;
+			//handleGPU.ptr += incrementSize * i;
 
 			m_CBV[i].HandleCPU = handleCPU;
 			m_CBV[i].HandleGPU = handleGPU;
@@ -676,7 +692,7 @@ bool App::OnInit()
 	//テクスチャ
 	{
 		std::wstring texturePath;
-		if (!SearchFilePath(L"res/SampleTexture.dds", texturePath))
+		if (!SearchFilePath(L"res/teapot/default.dds", texturePath))
 		{
 			std::cout << "Texture not found!" << std::endl;
 			return false;
@@ -699,9 +715,8 @@ bool App::OnInit()
 		auto handleCPU = m_pHeapCBV_SRV_UAV->GetCPUDescriptorHandleForHeapStart();
 		auto handleGPU = m_pHeapCBV_SRV_UAV->GetGPUDescriptorHandleForHeapStart();
 
-		handleCPU.ptr += incrementSize *2;
-		handleGPU.ptr += incrementSize *2;
-
+		//handleCPU.ptr += incrementSize *2;
+		//handleGPU.ptr += incrementSize *2;
 		m_Texture.HandleCPU = handleCPU;
 		m_Texture.HandleGPU = handleGPU;
 
@@ -792,24 +807,24 @@ bool App::OnInit()
 
 	//パイプラインステート
 	{
-		//位置アトリビュート
-		D3D12_INPUT_ELEMENT_DESC elements[2];
-		elements[0].SemanticName = "POSITION";
-		elements[0].SemanticIndex = 0;
-		elements[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-		elements[0].InputSlot = 0;
-		elements[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-		elements[0].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
-		elements[0].InstanceDataStepRate = 0;
+		////位置アトリビュート
+		//D3D12_INPUT_ELEMENT_DESC elements[2];
+		//elements[0].SemanticName = "POSITION";
+		//elements[0].SemanticIndex = 0;
+		//elements[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+		//elements[0].InputSlot = 0;
+		//elements[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+		//elements[0].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
+		//elements[0].InstanceDataStepRate = 0;
 
-		//テクスチャ座標アトリビュート
-		elements[1].SemanticName="TEXCOORD";
-		elements[1].SemanticIndex = 0;
-		elements[1].Format = DXGI_FORMAT_R32G32_FLOAT;
-		elements[1].InputSlot = 0;
-		elements[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-		elements[1].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
-		elements[1].InstanceDataStepRate = 0;
+		////テクスチャ座標アトリビュート
+		//elements[1].SemanticName="TEXCOORD";
+		//elements[1].SemanticIndex = 0;
+		//elements[1].Format = DXGI_FORMAT_R32G32_FLOAT;
+		//elements[1].InputSlot = 0;
+		//elements[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+		//elements[1].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
+		//elements[1].InstanceDataStepRate = 0;
 
 		D3D12_RASTERIZER_DESC descRS;
 		descRS.FillMode = D3D12_FILL_MODE_SOLID;
@@ -873,7 +888,7 @@ bool App::OnInit()
 		}
 
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC desc = {};
-		desc.InputLayout = {elements,_countof(elements)};
+		desc.InputLayout = MeshVertex::InputLayout;
 		desc.pRootSignature = m_pRootSignature.Get();
 		desc.VS = { pVSBlob->GetBufferPointer(),pVSBlob->GetBufferSize() };
 			desc.PS= { pPSBlob->GetBufferPointer(),pPSBlob->GetBufferSize() };
@@ -1027,9 +1042,10 @@ void App::Render()
 		//矩形設定
 		m_pCmdList->RSSetScissorRects(1, &m_Scissor);
 		//描画命令(マテリアルの数だけ実行される)
-		m_pCmdList->DrawIndexedInstanced(6, 1, 0, 0, 0);
+		auto count = static_cast<uint32_t>(m_Meshes[0].Indices.size());
+		m_pCmdList->DrawIndexedInstanced(count, 1, 0, 0, 0);
 		m_pCmdList->SetGraphicsRootConstantBufferView(0, m_CBV[m_FrameIndex * 2 + 1].Desc.BufferLocation);
-		m_pCmdList->DrawIndexedInstanced(6, 1, 0, 0, 0);
+		m_pCmdList->DrawIndexedInstanced(count, 1, 0, 0, 0);
 		NoesisApp::D3D12Factory::SetCommandList(_device, m_pCmdList.Get(), m_FenceCounter[m_FrameIndex]);
 		_view->GetRenderer()->Render();
 
