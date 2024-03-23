@@ -137,15 +137,26 @@ m_hWnd = nullptr;
 
 bool App::InitD3D()
 {
+//デバッグレイヤー
 #if defined(DEBUG)||defined(_DEBUG)
 	{
 		ComPtr<ID3D12Debug> pDebug;
+		ComPtr<ID3D12Debug1> pDebug1;
+
 		auto hr = D3D12GetDebugInterface(IID_PPV_ARGS(pDebug.GetAddressOf()));
 
 		if (SUCCEEDED(hr))
 		{
-			pDebug->EnableDebugLayer();
+			//pDebug->EnableDebugLayer();
+			hr = pDebug->QueryInterface(IID_PPV_ARGS(pDebug1.GetAddressOf()));
+			if (SUCCEEDED(hr))
+			{
+				//GPUベースの検証機能
+				pDebug1->SetEnableGPUBasedValidation(true);
+				
+			}
 		}
+		
 	}
 #endif
 	//デバイス
@@ -154,6 +165,17 @@ bool App::InitD3D()
 	{
 		return false;
 	}
+	//デバッグレイヤー時にメッセージが出る箇所でブレークをかける
+#if defined(DEBUG)||defined(_DEBUG)
+	{
+		ComPtr<ID3D12InfoQueue> pInfoQueue;
+		auto hr = m_pDevice->QueryInterface(IID_PPV_ARGS(pInfoQueue.GetAddressOf()));
+		if (SUCCEEDED(hr))
+		{
+			pInfoQueue->GetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR);
+		}
+	}
+#endif
 	//コマンドキュー
 	{
 		D3D12_COMMAND_QUEUE_DESC desc = {};
@@ -562,8 +584,6 @@ bool App::OnInit()
 	}
 	//インデックスバッファ
 	{
-		//uint32_t indices[] = {0,1,2,0,2,3};
-
 		auto indices = m_Meshes[0].Indices.data(); 
 		auto size = sizeof(uint32_t) * m_Meshes[0].Indices.size();
 
@@ -709,7 +729,10 @@ bool App::OnInit()
 		auto handleCPU = m_pHeapCBV_SRV_UAV->GetCPUDescriptorHandleForHeapStart();
 		auto handleGPU = m_pHeapCBV_SRV_UAV->GetGPUDescriptorHandleForHeapStart();
 
+		//CPUから参照するヒープポインタ
 		handleCPU.ptr += incrementSize *2;
+		//GPUから参照するヒープポインタ
+		//インデックスがずれてると違うディスクリプタを参照することになるから不具合の原因になる。
 		handleGPU.ptr += incrementSize *2;
 		m_Texture.HandleCPU = handleCPU;
 		m_Texture.HandleGPU = handleGPU;
@@ -727,7 +750,7 @@ bool App::OnInit()
 		viewDesc.Texture2D.ResourceMinLODClamp = 0.0f;
 
 		//ディスクリプタヒープにディスクリプタを作成
-		m_pDevice->CreateShaderResourceView(m_Texture.pResource.Get(), &viewDesc, handleCPU);
+		m_pDevice->CreateShaderResourceView(m_Texture.pResource.Get(), &viewDesc,handleCPU);
 	}
 	
 	//ルートシグニチャ
