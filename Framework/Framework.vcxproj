@@ -151,17 +151,17 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\include;C:\Users\hoodo\Downloads\NoesisGUI-NativeSDK-win-3.2.3-Indie\Include;C:\Users\hoodo\Downloads\NoesisGUI-NativeSDK-win-3.2.3-Indie\Src\Packages\App\Launcher\Include;C:\Users\hoodo\Downloads\NoesisGUI-NativeSDK-win-3.2.3-Indie\Src\Packages\App\Providers\Include;C:\Users\hoodo\Downloads\NoesisGUI-NativeSDK-win-3.2.3-Indie\Src\Packages\App\Theme\Include;C:\Users\hoodo\Downloads\NoesisGUI-NativeSDK-win-3.2.3-Indie\Src\Packages\Render\D3D12RenderDevice\Include;C:\Users\hoodo\Downloads\NoesisGUI-NativeSDK-win-3.2.3-Indie\Src\Packages\App\Display\Include;C:\Users\hoodo\Downloads\NoesisGUI-NativeSDK-win-3.2.3-Indie\Src\Packages\Render\RenderContext\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\include;$(NOESIS_SDK)\Include;$(NOESIS_SDK)\Src\Packages\App\Launcher\Include;$(NOESIS_SDK)\Packages\App\Providers\Include;$(NOESIS_SDK)\Src\Packages\App\Theme\Include;$(NOESIS_SDK)\Src\Packages\Render\D3D12RenderDevice\Include;$(NOESIS_SDK)\Src\Packages\App\Display\Include;$(NOESIS_SDK)\Src\Packages\Render\RenderContext\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\hoodo\Downloads\NoesisGUI-NativeSDK-win-3.2.3-Indie\Lib\windows_x86_64;C:\mystr\dev\Framework\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(NOESIS_SDK)\Lib\windows_x86_64;$(SolutionDir)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y /d ""C:\Users\hoodo\Downloads\NoesisGUI-NativeSDK-win-3.2.3-Indie\Bin\windows_x86_64\NoesisApp.dll"" "$(OutDir)"
-xcopy /y /d ""C:\Users\hoodo\Downloads\NoesisGUI-NativeSDK-win-3.2.3-Indie\Bin\windows_x86_64\Noesis.dll"" "$(OutDir)"</Command>
+      <Command>xcopy /y /d ""$(NOESIS_SDK)\Bin\windows_x86_64\NoesisApp.dll"" "$(OutDir)"
+xcopy /y /d ""$(NOESIS_SDK)\Bin\windows_x86_64\Noesis.dll"" "$(OutDir)"</Command>
     </PostBuildEvent>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
@@ -178,7 +178,7 @@ xcopy /y /d ""C:\Users\hoodo\Downloads\NoesisGUI-NativeSDK-win-3.2.3-Indie\Bin\w
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\include;C:\Users\hoodo\Downloads\NoesisGUI-NativeSDK-win-3.2.3-Indie\Include;C:\Users\hoodo\Downloads\NoesisGUI-NativeSDK-win-3.2.3-Indie\Src\Packages\App\Launcher\Include;C:\Users\hoodo\Downloads\NoesisGUI-NativeSDK-win-3.2.3-Indie\Src\Packages\App\Providers\Include;C:\Users\hoodo\Downloads\NoesisGUI-NativeSDK-win-3.2.3-Indie\Src\Packages\App\Theme\Include;C:\Users\hoodo\Downloads\NoesisGUI-NativeSDK-win-3.2.3-Indie\Src\Packages\Render\D3D12RenderDevice\Include;C:\Users\hoodo\Downloads\NoesisGUI-NativeSDK-win-3.2.3-Indie\Src\Packages\App\Display\Include;C:\Users\hoodo\Downloads\NoesisGUI-NativeSDK-win-3.2.3-Indie\Src\Packages\Render\RenderContext\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\include;$(NOESIS_SDK)\Include;$(NOESIS_SDK)\Src\Packages\App\Launcher\Include;$(NOESIS_SDK)\Packages\App\Providers\Include;$(NOESIS_SDK)\Src\Packages\App\Theme\Include;$(NOESIS_SDK)\Src\Packages\Render\D3D12RenderDevice\Include;$(NOESIS_SDK)\Src\Packages\App\Display\Include;$(NOESIS_SDK)\Src\Packages\Render\RenderContext\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -186,7 +186,7 @@ xcopy /y /d ""C:\Users\hoodo\Downloads\NoesisGUI-NativeSDK-win-3.2.3-Indie\Bin\w
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\hoodo\Downloads\NoesisGUI-NativeSDK-win-3.2.3-Indie\Lib\windows_x86_64;C:\mystr\dev\Framework\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(NOESIS_SDK)\Lib\windows_x86_64;$(SolutionDir)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
       <ShaderModel>6.0</ShaderModel>

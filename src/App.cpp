@@ -5,6 +5,8 @@
 #include "FileUtil.h"
 #include <cassert>
 #include <iostream>
+#include <NsGui/Button.h>
+#include <NsGui/IntegrationAPI.h>
 
 
 namespace {
@@ -485,7 +487,7 @@ void App::NoesisInit(ID3D12Device* pDevice, ID3D12Fence* pFence, DXGI_FORMAT col
 	 _view = Noesis::GUI::CreateView(xaml).GiveOwnership();
 	_view->SetFlags(Noesis::RenderFlags_PPAA | Noesis::RenderFlags_LCD);
 	_device = NoesisApp::D3D12Factory::CreateDevice(pDevice, pFence, colorFormat, stencilFormat, sampleDesc, sRGB);
-	//IRenderer‚ðD3D‚P‚QƒfƒoƒCƒX‚©‚ç‰Šú‰»
+	//IRenderer‚ðD3D‚P‚QƒfƒoƒCƒX‚©‚ç‰Šú‰»	
 	_view->GetRenderer()->Init(_device);
 
 
