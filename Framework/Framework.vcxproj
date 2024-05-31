@@ -151,7 +151,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\include;$(NOESIS_SDK)\Include;$(NOESIS_SDK)\Src\Packages\App\Launcher\Include;$(NOESIS_SDK)\Packages\App\Providers\Include;$(NOESIS_SDK)\Src\Packages\App\Theme\Include;$(NOESIS_SDK)\Src\Packages\Render\D3D12RenderDevice\Include;$(NOESIS_SDK)\Src\Packages\App\Display\Include;$(NOESIS_SDK)\Src\Packages\Render\RenderContext\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\include;$(NOESIS_SDK)\Include;$(NOESIS_SDK)\Src\Packages\App\Launcher\Include;$(NOESIS_SDK)\Src\Packages\App\Providers\Include;$(NOESIS_SDK)\Src\Packages\App\Theme\Include;$(NOESIS_SDK)\Src\Packages\Render\D3D12RenderDevice\Include;$(NOESIS_SDK)\Src\Packages\App\Display\Include;$(NOESIS_SDK)\Src\Packages\Render\RenderContext\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -178,7 +178,7 @@ xcopy /y /d ""$(NOESIS_SDK)\Bin\windows_x86_64\Noesis.dll"" "$(OutDir)"</Command
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\include;$(NOESIS_SDK)\Include;$(NOESIS_SDK)\Src\Packages\App\Launcher\Include;$(NOESIS_SDK)\Packages\App\Providers\Include;$(NOESIS_SDK)\Src\Packages\App\Theme\Include;$(NOESIS_SDK)\Src\Packages\Render\D3D12RenderDevice\Include;$(NOESIS_SDK)\Src\Packages\App\Display\Include;$(NOESIS_SDK)\Src\Packages\Render\RenderContext\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\include;$(NOESIS_SDK)\Include;$(NOESIS_SDK)\Src\Packages\App\Launcher\Include;$(NOESIS_SDK)\Src\Packages\App\Providers\Include;$(NOESIS_SDK)\Src\Packages\App\Theme\Include;$(NOESIS_SDK)\Src\Packages\Render\D3D12RenderDevice\Include;$(NOESIS_SDK)\Src\Packages\App\Display\Include;$(NOESIS_SDK)\Src\Packages\Render\RenderContext\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
